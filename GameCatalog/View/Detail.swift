@@ -9,10 +9,13 @@ import SwiftUI
 import URLImage
 
 struct Detail: View {
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: FavGame.entity(), sortDescriptors: []) var favGame: FetchedResults<FavGame>
     var description: Requirements?
     var game: Game
     
     var body: some View {
+        ScrollView {
         VStack {
             URLImage(URL(string: game.backgroundImage)!) { image in
                 image
@@ -48,7 +51,25 @@ struct Detail: View {
             Text(pcPlatform?.requirementsEn?.minimum ?? "-")
         }
         .navigationBarTitle("\(game.name)", displayMode: .inline)
-    }
-    
-}
+        .navigationBarItems(trailing:
+            Button("Fav") {
+                let favGame = FavGame(context: self.moc)
+                favGame.id = UUID()
+                favGame.name = self.game.name
+                favGame.released = self.game.released
+                favGame.backgroundImage = self.game.backgroundImage
+                favGame.rating = self.game.rating
+                
 
+                try? self.moc.save()
+            }
+        )
+    }
+
+}
+    func formatText(word: String) -> String {
+        let a = word.replacingOccurrences(of: "<[^>]+>", with: "", options: String.CompareOptions.regularExpression, range: nil)
+        let result = a.replacingOccurrences(of: "&[^;]+;", with: "", options: String.CompareOptions.regularExpression, range: nil)
+        return result
+    }
+}

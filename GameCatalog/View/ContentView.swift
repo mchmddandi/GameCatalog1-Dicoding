@@ -21,9 +21,15 @@ struct ContentView: View {
             HomeView().tabItem {
                 tabBarItem(text: "Games", image: "gamecontroller")
             }.tag(Tab.game)
+            FavouriteView().tabItem {
+                VStack {
+                    Image(systemName: "heart.fill")
+                    Text("Favourite")
+                }
+            }.tag(0)
             SearchView().tabItem {
                 tabBarItem(text: "Search", image: "magnifyingglass")
-            }.tag(0)
+            }.tag(1)
         }
             }.navigationBarTitle("Games",displayMode: .automatic)
             .navigationBarItems(trailing: HStack{
